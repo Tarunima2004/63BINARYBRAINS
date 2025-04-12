@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Support Portal</title>
+  <style>
+    :root {
+      --primary-color: #4a6df5;
+      --primary-dark: #3b56c4;
+      --secondary-color: #6c757d;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .header {
+      background: var(--primary-color);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+    
+    .form-container {
+      padding: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: var(--radius);
+      border: 1px solid #ced4da;
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(74, 109, 245, 0.25);
+      outline: none;
+    }
+    
+    .btn {
+      display: inline-block;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    /* Email page specific styles */
+    #email-page {
+      display: block;
+    }
+    
+    .email-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      text-align: center;
+    }
+    
+    /* Issue page specific styles */
+    #issue-page {
+      display: none;
+    }
+    
+    .user-email {
+      background: var(--light-color);
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-email i {
+      margin-right: 10px;
+      color: var(--primary-color);
+    }
+    
+    .category-select {
+      margin-bottom: 20px;
+    }
+    
+    .priority-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .priority-option {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .priority-option:hover {
+      background: #f8f9fa;
+    }
+    
+    .priority-option.selected {
+      border-color: var(--primary-color);
+      background: rgba(74, 109, 245, 0.1);
+    }
+    
+    .priority-option i {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    
+    .low { color: #28a745; }
+    .medium { color: #ffc107; }
+    .high { color: #dc3545; }
+    
+    .attachment-area {
+      border: 2px dashed #ced4da;
+      padding: 20px;
+      text-align: center;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    
+    .attachment-area:hover {
+      border-color: var(--primary-color);
+      background: rgba(74, 109, 245, 0.05);
+    }
+    
+    .attachment-area i {
+      font-size: 30px;
+      color: var(--secondary-color);
+      margin-bottom: 10px;
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+    
+    .success-message i {
+      font-size: 60px;
+      color: var(--success-color);
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 576px) {
+      .container {
+        margin: 0;
+        border-radius: 0;
+      }
+      
+      .priority-options {
+        flex-direction: column;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Email Page -->
+    <div id="email-page">
+      <div class="header">
+        <h1>Customer Support</h1>
+        <p>We're here to help you resolve any issues</p>
+      </div>
+      <div class="form-container">
+        <div class="email-icon">
+          <i class="fas fa-envelope-open-text"></i>
+        </div>
+        <div class="form-group">
+          <label for="email">Please enter your email address</label>
+          <input type="email" id="email" class="form-control" placeholder="your.email@example.com" required>
+        </div>
+        <button id="continue-btn" class="btn" style="width: 100%;">Continue</button>
+      </div>
+    </div>
+    
+    <!-- Issue Page -->
+    <div id="issue-page">
+      <div class="header">
+        <h1>Describe Your Issue</h1>
+        <p>Tell us what's happening so we can help you better</p>
+      </div>
+      <div class="form-container">
+        <div class="user-email">
+          <i class="fas fa-user-circle"></i>
+          <span id="display-email">user@example.com</span>
+          <button id="change-email" style="margin-left: auto; background: none; color: var(--primary-color); padding: 0;">
+            <i class="fas fa-pen"></i>
+          </button>
+        </div>
+        
+        <div class="form-group">
+          <label for="category">Issue Category</label>
+          <select id="category" class="form-control">
+            <option value="">Select a category</option>
+            <option value="technical">Technical Support</option>
+            <option value="billing">Billing Issue</option>
+            <option value="account">Account Management</option>
+            <option value="product">Product Inquiry</option>
+            <option value="feedback">Feedback/Suggestions</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Priority Level</label>
+          <div class="priority-options">
+            <div class="priority-option" data-priority="low">
+              <i class="fas fa-thermometer-empty low"></i>
+              <span>Low</span>
+            </div>
+            <div class="priority-option" data-priority="medium">
+              <i class="fas fa-thermometer-half medium"></i>
+              <span>Medium</span>
+            </div>
+            <div class="priority-option" data-priority="high">
+              <i class="fas fa-thermometer-full high"></i>
+              <span>High</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="issue-description">Describe Your Issue</label>
+          <textarea id="issue-description" class="form-control" rows="5" placeholder="Please provide details about your issue..."></textarea>
+        </div>
+        
+        <div class="attachment-area">
+          <i class="fas fa-paperclip"></i>
+          <p>Drag & drop files or click to attach screenshots</p>
+          <input type="file" id="file-upload" style="display: none;" multiple>
+        </div>
+        
+        <button id="submit-issue" class="btn" style="width: 100%;">Submit Request</button>
+      </div>
+    </div>
+    
+    <!-- Success Message -->
+    <div id="success-message" class="success-message">
+      <i class="fas fa-check-circle"></i>
+      <h2>Request Submitted</h2>
+      <p>Your service request has been successfully submitted. We'll get back to you as soon as possible.</p>
+      <p id="ticket-number" style="margin: 15px 0; font-weight: bold;"></p>
+      <button id="new-request" class="btn">Submit Another Request</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elements
+      const emailPage = document.getElementById('email-page');
+      const issuePage = document.getElementById('issue-page');
+      const successMessage = document.getElementById('success-message');
+      const continueBtn = document.getElementById('continue-btn');
+      const emailInput = document.getElementById('email');
+      const displayEmail = document.getElementById('display-email');
+      const changeEmailBtn = document.getElementById('change-email');
+      const submitIssueBtn = document.getElementById('submit-issue');
+      const newRequestBtn = document.getElementById('new-request');
+      const attachmentArea = document.querySelector('.attachment-area');
+      const fileUpload = document.getElementById('file-upload');
+      const priorityOptions = document.querySelectorAll('.priority-option');
+      const ticketNumber = document.getElementById('ticket-number');
+      
+      // Variables
+      let selectedPriority = '';
+      
+      // Continue to issue page
+      continueBtn.addEventListener('click', function() {
+        const email = emailInput.value.trim();
+        if (!email || !validateEmail(email)) {
+          alert('Please enter a valid email address');
+          return;
+        }
+        
+        // Show issue page
+        emailPage.style.display = 'none';
+        issuePage.style.display = 'block';
+        displayEmail.textContent = email;
+      });
+      
+      // Change email
+      changeEmailBtn.addEventListener('click', function() {
+        emailPage.style.display = 'block';
+        issuePage.style.display = 'none';
+      });
+      
+      // Priority selection
+      priorityOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          priorityOptions.forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+          selectedPriority = this.dataset.priority;
+        });
+      });
+      
+      // Attachment handling
+      attachmentArea.addEventListener('click', function() {
+        fileUpload.click();
+      });
+      
+      fileUpload.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          let fileNames = Array.from(this.files).map(file => file.name).join(', ');
+          attachmentArea.innerHTML = `
+            <i class="fas fa-file-alt"></i>
+            <p>${fileNames}</p>
+            <small>(Click to change)</small>
+          `;
+        }
+      });
+      
+      // Submit issue
+      submitIssueBtn.addEventListener('click', function() {
+        const category = document.getElementById('category').value;
+        const description = document.getElementById('issue-description').value.trim();
+        
+        if (!category) {
+          alert('Please select an issue category');
+          return;
+        }
+        
+        if (!description) {
+          alert('Please describe your issue');
+          return;
+        }
+        
+        if (!selectedPriority) {
+          alert('Please select a priority level');
+          return;
+        }
+        
+        // Generate random ticket number
+        const ticketId = 'SR-' + Math.floor(100000 + Math.random() * 900000);
+        ticketNumber.textContent = `Ticket #: ${ticketId}`;
+        
+        // Show success message
+        issuePage.style.display = 'none';
+        successMessage.style.display = 'block';
+        
+        // Here you would normally send the data to your backend
+        console.log({
+          email: displayEmail.textContent,
+          category,
+          priority: selectedPriority,
+          description,
+          files: fileUpload.files
+        });
+      });
+      
+      // New request
+      newRequestBtn.addEventListener('click', function() {
+        // Reset form
+        document.getElementById('category').value = '';
+        document.getElementById('issue-description').value = '';
+        priorityOptions.forEach(opt => opt.classList.remove('selected'));
+        selectedPriority = '';
+        attachmentArea.innerHTML = `
+          <i class="fas fa-paperclip"></i>
+          <p>Drag & drop files or click to attach screenshots</p>
+          <input type="file" id="file-upload" style="display: none;" multiple>
+        `;
+        fileUpload.value = '';
+        
+        // Show email page
+        successMessage.style.display = 'none';
+        emailPage.style.display = 'block';
+        emailInput.value = '';
+      });
+      
+      // Email validation
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+    });
+  </script>
+</body>
+</html>

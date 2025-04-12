@@ -1,0 +1,8 @@
+[
+    {
+        "ticket_id": "12345",
+        "customer_name": "John Doe",
+        "issue_type": "technical",
+        "description": "Internet not working."
+    }
+]
